@@ -38,7 +38,7 @@
                     break;
 
                 case 2:
-                    // 작업해보기
+                    DisplayInventory();
                     break;
             }
         }
@@ -58,6 +58,8 @@
             Console.WriteLine($"Gold : {player.Gold} G");
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             int input = CheckValidInput(0, 0);
             switch (input)
@@ -70,7 +72,31 @@
 
         static void DisplayInventory()
         {
+            Console.Clear();
 
+            Console.WriteLine("인벤토리");
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine($"[아이템 목록]");
+            Console.WriteLine($"- 무쇠갑옷      | 방어력 +5 | 무쇠로 만들어져 튼튼한 갑옷입니다.");
+            Console.WriteLine($"- 낡은 검       | 공격력 +2 | 쉽게 볼 수 있는 낡은 검 입니다.");
+            Console.WriteLine();
+            Console.WriteLine("1. 장착 관리");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int input = CheckValidInput(0, 1);
+            switch (input)
+            {
+                case 0:
+                    DisplayGameIntro();
+                    break;
+
+                case 1:
+                    //나중에 만들거
+                    break;
+            }
         }
 
         static int CheckValidInput(int min, int max)
