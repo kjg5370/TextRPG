@@ -5,7 +5,7 @@ namespace textRPG
     internal class Program
     {
         private static Character player;
-        private static Equipment[] equipments = new Equipment[2];
+        private static Equipment[] equipments = new Equipment[4];
 
         static void Main(string[] args)
         {
@@ -21,6 +21,8 @@ namespace textRPG
             // 아이템 정보 세팅
             equipments[0] = new Equipment("무쇠갑옷", "방어력 +5", "무쇠로 만들어져 튼튼한 갑옷입니다.",0,5);
             equipments[1] = new Equipment("낡은 검 ", "공격력 +2", "쉽게 볼 수 있는 낡은 검 입니다.",2,0);
+            equipments[2] = new Equipment("거북이 등껍질 ", "방어력 +10", "무천도사가 늘 등에 짊어지고 있는 등껍질입니다.", 0, 10);
+            equipments[3] = new Equipment("여의봉 ", "공격력 +10", "길이는 분명히 조절할 수 있지만 굵기는 일정한 봉입니다.", 10, 0);
         }
 
         static void DisplayGameIntro()
@@ -84,6 +86,8 @@ namespace textRPG
             Console.WriteLine($"[아이템 목록]");
             Console.WriteLine("- " + equipments[0].PrintEquipment());
             Console.WriteLine("- " + equipments[1].PrintEquipment());
+            Console.WriteLine("- " + equipments[2].PrintEquipment());
+            Console.WriteLine("- " + equipments[3].PrintEquipment());
             Console.WriteLine();
             Console.WriteLine("1. 장착 관리");
             Console.WriteLine("0. 나가기");
@@ -130,11 +134,13 @@ namespace textRPG
             Console.WriteLine($"[아이템 목록]");
             Console.WriteLine("- 1 " + equipments[0].PrintEquipment());
             Console.WriteLine("- 2 " + equipments[1].PrintEquipment());
+            Console.WriteLine("- 3 " + equipments[2].PrintEquipment());
+            Console.WriteLine("- 4 " + equipments[3].PrintEquipment());
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            int input = CheckValidInput(0, 2);
+            int input = CheckValidInput(0, 4);
             switch (input)
             {
                 case 0:
@@ -147,6 +153,14 @@ namespace textRPG
                     break;
                 case 2:
                     equipments[1].MountEquipment(player);
+                    EquipmentManaged();
+                    break;
+                case 3:
+                    equipments[2].MountEquipment(player);
+                    EquipmentManaged();
+                    break;
+                case 4:
+                    equipments[3].MountEquipment(player);
                     EquipmentManaged();
                     break;
             }
