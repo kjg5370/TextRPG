@@ -54,7 +54,9 @@ namespace textRPG
         {
             Console.Clear();
 
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("상태보기");
+            Console.ResetColor();
             Console.WriteLine("캐릭터의 정보르 표시합니다.");
             Console.WriteLine();
             Console.WriteLine($"Lv.{player.Level}");
@@ -80,7 +82,10 @@ namespace textRPG
         {
             Console.Clear();
 
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor= ConsoleColor.Red;
             Console.WriteLine("인벤토리");
+            Console.ResetColor ();
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
@@ -128,7 +133,10 @@ namespace textRPG
         {
             Console.Clear();
 
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("인벤토리");
+            Console.ResetColor();
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
