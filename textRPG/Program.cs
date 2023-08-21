@@ -1,4 +1,7 @@
 ﻿using System.Data;
+using System.Text;
+using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace textRPG
 {
@@ -19,10 +22,13 @@ namespace textRPG
             player = new Character("Chad", "전사", 1, 10, 5, 100, 1500);
 
             // 아이템 정보 세팅
-            equipments[0] = new Equipment("무쇠갑옷", "방어력 +5", "무쇠로 만들어져 튼튼한 갑옷입니다.",0,5);
-            equipments[1] = new Equipment("낡은 검 ", "공격력 +2", "쉽게 볼 수 있는 낡은 검 입니다.",2,0);
-            equipments[2] = new Equipment("거북이 등껍질 ", "방어력 +10", "무천도사가 늘 등에 짊어지고 있는 등껍질입니다.", 0, 10);
-            equipments[3] = new Equipment("여의봉 ", "공격력 +10", "길이는 분명히 조절할 수 있지만 굵기는 일정한 봉입니다.", 10, 0);
+            equipments[0] = new Equipment("무쇠갑옷", "방어력 +5", "무쇠로 만들어져 튼튼한 갑옷입니다.", ItemType.Armor, 5);
+            equipments[1] = new Equipment("낡은 검", "공격력 +2", "쉽게 볼 수 있는 낡은 검 입니다.", ItemType.Weapon, 2);
+            equipments[2] = new Equipment("거북이 등껍질", "방어력 +10", "무천도사가 늘 등에 짊어지고 있는 등껍질입니다.", ItemType.Armor, 10);
+            equipments[3] = new Equipment("여의봉", "공격력 +10", "길이는 조절할 수 있지만 굵기는 일정한 봉입니다.", ItemType.Weapon, 10);
+
+
+
         }
 
         static void DisplayGameIntro()
@@ -83,16 +89,13 @@ namespace textRPG
             Console.Clear();
 
             Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor= ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("인벤토리");
-            Console.ResetColor ();
+            Console.ResetColor();
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            Console.WriteLine("- " + equipments[0].PrintEquipment());
-            Console.WriteLine("- " + equipments[1].PrintEquipment());
-            Console.WriteLine("- " + equipments[2].PrintEquipment());
-            Console.WriteLine("- " + equipments[3].PrintEquipment());
+            PrintFormattedItems(equipments,false);
             Console.WriteLine();
             Console.WriteLine("1. 장착 관리");
             Console.WriteLine("0. 나가기");
@@ -140,42 +143,42 @@ namespace textRPG
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            Console.WriteLine("- 1 " + equipments[0].PrintEquipment());
-            Console.WriteLine("- 2 " + equipments[1].PrintEquipment());
-            Console.WriteLine("- 3 " + equipments[2].PrintEquipment());
-            Console.WriteLine("- 4 " + equipments[3].PrintEquipment());
+            PrintFormattedItems(equipments,true);
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            int input = CheckValidInput(0, 4);
-            switch (input)
+            int input = CheckValidInput(0, equipments.Length);
+            if (input == 0)
             {
-                case 0:
-                    DisplayInventory();
-                    break;
-
-                case 1:
-                    equipments[0].MountEquipment(player);
-                    EquipmentManaged();
-                    break;
-                case 2:
-                    equipments[1].MountEquipment(player);
-                    EquipmentManaged();
-                    break;
-                case 3:
-                    equipments[2].MountEquipment(player);
-                    EquipmentManaged();
-                    break;
-                case 4:
-                    equipments[3].MountEquipment(player);
-                    EquipmentManaged();
-                    break;
+                DisplayInventory();
+            }
+            else
+            {
+                equipments[input - 1].MountEquipment(player);
+                EquipmentManaged();
             }
         }
 
-    }
+        static void PrintFormattedItems(Equipment[] equipments, bool useIndex = false)
+        {
+            int i = 1; // 시작 인덱스
+            foreach (Equipment equipment in equipments)
+            {
+                string indexString = useIndex ? $"{i} " : ""; // 인덱스 출력 여부에 따라 결정
+                string formattedString = $"- {indexString}{equipment.eName,-10} |{equipment.Stat,-10} |{equipment.Data,-30}";
+                Console.WriteLine(formattedString);
 
+                if (useIndex)
+                    i++;
+            }
+        }
+    }
+    public enum ItemType
+    {
+        Armor,
+        Weapon
+    }
 
     public class Character
     {
@@ -199,26 +202,11 @@ namespace textRPG
         }
         public void PrintMount()
         {
-            if (Atk == 10 && Def == 5)
-            {
-                Console.WriteLine($"공격력 : {Atk}");
-                Console.WriteLine($"방어력 : {Def}");
-            }
-            else if (Atk != 10 && Def == 5)
-            {
-                Console.WriteLine("공격력 : {0} (+{1})", Atk, Atk - 10);
-                Console.WriteLine($"방어력 : {Def}");
-            }
-            else if (Atk == 10 && Def != 5)
-            {
-                Console.WriteLine($"공격력 : {Atk}");
-                Console.WriteLine("방어력 : {0} (+{1})", Def, Def - 5);
-            }
-            else
-            {
-                Console.WriteLine("공격력 : {0} (+{1})", Atk, Atk - 10);
-                Console.WriteLine("방어력 : {0} (+{1})", Def, Def - 5);
-            }
+            string atkDescription = Atk == 10 ? $"공격력 : {Atk}" : $"공격력 : {Atk} (+{Atk - 10})";
+            string defDescription = Def == 5 ? $"방어력 : {Def}" : $"방어력 : {Def} (+{Def - 5})";
+
+            Console.WriteLine(atkDescription);
+            Console.WriteLine(defDescription);
 
         }
     }
@@ -226,42 +214,45 @@ namespace textRPG
     public class Equipment
     {
         public string eName { get; private set; }
-        public string Stat { get; }
-        public string Data { get; }
-        public int eAtk { get; }
-        public int eDef { get; }
+        public string Stat { get; private set; }
+        public string Data { get; private set; }
+        public ItemType Type { get; }
+        public int StatValue { get; }
         string Mount = "[E]";
-        public Equipment(string name, string stat, string data, int atk, int def)
+        public Equipment(string name, string stat, string data, ItemType type, int statValue)
         {
             eName = name;
             Stat = stat;
             Data = data;
-            eAtk = atk;
-            eDef = def;
+            Type = type;
+            StatValue = statValue;
         }
-        public string PrintEquipment()
-        {
-           return eName + "|" + Stat +"|"+ Data;
-        }
+        
         public void MountEquipment(Character player)
         {
             if (eName.IndexOf(Mount) == -1)
             {
                 eName = Mount + eName;
-                if(eAtk != 0)
+                if (Type == ItemType.Weapon)
                 {
-                    player.Atk += eAtk;
+                    player.Atk += StatValue;
                 }
-                else if (eDef != 0)
+                else if (Type == ItemType.Armor)
                 {
-                    player.Def += eDef;
+                    player.Def += StatValue;
                 }
             }
             else
             {
-               eName = eName.Replace(Mount, "");
-               player.Atk -= eAtk;
-               player.Def -= eDef;
+                eName = eName.Replace(Mount, "");
+                if (Type == ItemType.Weapon)
+                {
+                    player.Atk -= StatValue;
+                }
+                else if (Type == ItemType.Armor)
+                {
+                    player.Def -= StatValue;
+                }
             }
         }
     }
