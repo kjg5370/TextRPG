@@ -1,7 +1,4 @@
 ﻿using System.Data;
-using System.Text;
-using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 
 namespace textRPG
 {
