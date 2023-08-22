@@ -610,7 +610,7 @@ namespace textRPG
             BaseHP = player.Hp;
             BaseGold = player.Gold;
 
-            HpLoss = new Random().Next(20, 36) + Math.Max(player.Def - RequiredDef, 0); // 20 ~ 35 랜덤 값 + (내 방어력 - 권장 방어력)
+            HpLoss = new Random().Next(20, 36) - (player.Def - RequiredDef); // 20 ~ 35 랜덤 값 + (내 방어력 - 권장 방어력)
             int baseReward = GetBaseReward();
             double bonusReward = new Random().Next(player.Atk, player.Atk * 2) / 100.0;
             double totalReward = baseReward *(1+ bonusReward);
