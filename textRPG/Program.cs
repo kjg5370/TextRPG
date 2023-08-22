@@ -371,6 +371,8 @@ namespace textRPG
         }
         static void DisplayDungeonClear(Dungeon dungeon)
         {
+            player.ClearCount++;
+            player.LevelUp();
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("던전 클리어!");
@@ -484,16 +486,19 @@ namespace textRPG
     {
         public string Name { get; }
         public string Job { get; }
-        public int Level { get; }
-        public int Atk { get; set; }
+        public int Level { get; private set; }
+        public double Atk { get; set; }
         public int Def { get; set; }
         public int Hp { get; set; }
         public int Gold { get; set; }
-
+        public int ClearCount { get; set; }
         private Equipment equippedArmor;
         private Equipment equippedWeapon;
 
-        public Character(string name, string job, int level, int atk, int def, int hp, int gold)
+        int armorStat;
+        int weaponStat;
+
+        public Character(string name, string job, int level, double atk, int def, int hp, int gold)
         {
             Name = name;
             Job = job;
@@ -502,11 +507,12 @@ namespace textRPG
             Def = def;
             Hp = hp;
             Gold = gold;
+            ClearCount = 0;
         }
         public void PrintMount()
         {
-            string atkDescription = Atk == 10 ? $"공격력 : {Atk}" : $"공격력 : {Atk} (+{Atk - 10})";
-            string defDescription = Def == 5 ? $"방어력 : {Def}" : $"방어력 : {Def} (+{Def - 5})";
+            string atkDescription = Atk == Atk + weaponStat ? $"공격력 : {Atk}" : $"공격력 : {Atk} (+{weaponStat})";
+            string defDescription = Def == Def + armorStat ? $"방어력 : {Def}" : $"방어력 : {Def} (+{armorStat})";
 
             Console.WriteLine(atkDescription);
             Console.WriteLine(defDescription);
@@ -524,19 +530,23 @@ namespace textRPG
                     equippedArmor = item;
                     equippedArmor.IsMount(true);
                     Def += equippedArmor.StatValue;
+                    armorStat = equippedArmor.StatValue;
                 }
             }
             else if (item.Type == Equipment.ItemType.Weapon)
             {
-                if (equippedArmor == item) UnequipArmor();
+                if (equippedWeapon == item) UnequipWeapon();
                 else
                 {
                     UnequipWeapon();
                     equippedWeapon = item;
                     equippedWeapon.IsMount(true);
                     Atk += equippedWeapon.StatValue;
+                    weaponStat = equippedWeapon.StatValue;
                 }
             }
+            
+            
         }
         public void UnequipArmor()
         {
@@ -545,6 +555,7 @@ namespace textRPG
                 equippedArmor.IsMount(false);
                 Def -= equippedArmor.StatValue;
                 equippedArmor = null;
+                armorStat = 0;
             }
         }
 
@@ -555,9 +566,20 @@ namespace textRPG
                 equippedWeapon.IsMount(false);
                 Atk -= equippedWeapon.StatValue;
                 equippedWeapon = null;
+                weaponStat = 0;
             }
         }
 
+        public void LevelUp()
+        {
+            if(ClearCount ==Level)
+            {
+                Level = ClearCount+1;
+                ClearCount = 0;
+                Atk += 0.5;
+                Def += 1;
+            }
+        }
     }
 
     public class Equipment
@@ -656,7 +678,7 @@ namespace textRPG
 
             HpLoss = new Random().Next(20, 36) - (player.Def - RequiredDef); // 20 ~ 35 랜덤 값 + (내 방어력 - 권장 방어력)
             int baseReward = GetBaseReward();
-            double bonusReward = new Random().Next(player.Atk, player.Atk * 2) / 100.0;
+            double bonusReward = new Random().Next((int)player.Atk, (int)player.Atk * 2) / 100.0;
             double totalReward = baseReward *(1+ bonusReward);
 
             player.Hp -= HpLoss;
