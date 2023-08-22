@@ -40,12 +40,11 @@ namespace textRPG
             shopItems[3].Price = 0;
             shopItems[6].Price = 0;
             shopItems[7].Price = 0;
-        }
+        }//게임 시작 전 데이터 세팅
 
-        static void DisplayGameIntro()
+        static void DisplayGameIntro() // 게임 인트로 화면
         {
             Console.Clear();
-
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 전전으로 들어가기 전 활동을 할 수 있습니다.");
             Console.WriteLine();
@@ -61,87 +60,24 @@ namespace textRPG
             switch (input)
             {
                 case 1:
-                    DisplayMyInfo();
+                    DisplayMyInfo();            //상태보기
                     break;
-
                 case 2:
-                    DisplayInventory();
+                    DisplayInventory();         //인벤토리보기
                     break;
                 case 3:
-                    DisplayShop();
+                    DisplayShop();              //상점보기
                     break;
                 case 4:
-                    DisplayEnterDungeon();
+                    DisplayEnterDungeon();  //던전입장
                     break;
                 case 5:
-                    DisplayRest();
+                    DisplayRest();               //휴식하기
                     break;
             }
         }
 
-        static void DisplayMyInfo()
-        {
-            Console.Clear();
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("상태보기");
-            Console.ResetColor();
-            Console.WriteLine("캐릭터의 정보르 표시합니다.");
-            Console.WriteLine();
-            Console.WriteLine($"Lv.{player.Level}");
-            Console.WriteLine($"{player.Name}({player.Job})");
-            player.PrintMount();
-            Console.WriteLine($"체력 : {player.Hp}");
-            Console.WriteLine($"Gold : {player.Gold} G");
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            int input = CheckValidInput(0, 0);
-            switch (input)
-            {
-                case 0:
-                    DisplayGameIntro();
-                    break;
-            }
-        }
-
-        static void DisplayInventory()
-        {
-            Console.Clear();
-
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("인벤토리");
-            Console.ResetColor();
-            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
-            Console.WriteLine();
-            Console.WriteLine($"[아이템 목록]");
-            foreach (Equipment equip in equipments)
-            {
-                equip.PrintFormatted();
-            }
-            Console.WriteLine();
-            Console.WriteLine("1. 장착 관리");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            int input = CheckValidInput(0, 1);
-            switch (input)
-            {
-                case 0:
-                    DisplayGameIntro();
-                    break;
-
-                case 1:
-                    EquipmentManaged();
-                    break;
-            }
-        }
-
-        static int CheckValidInput(int min, int max)
+        static int CheckValidInput(int min, int max) //유효한 입력 확인
         {
             while (true)
             {
@@ -158,10 +94,69 @@ namespace textRPG
             }
         }
 
-        static void EquipmentManaged()
+        static void DisplayMyInfo()
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("상태보기");
+            Console.ResetColor();
+            Console.WriteLine("캐릭터의 정보르 표시합니다.");
+            Console.WriteLine();
+            Console.WriteLine($"Lv.{player.Level}");
+            Console.WriteLine($"{player.Name}({player.Job})");
+            player.PrintMount();  // 플레이어의 공격력 방어력 출력
+            Console.WriteLine($"체력 : {player.Hp}");
+            Console.WriteLine($"Gold : {player.Gold} G");
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
 
+            int input = CheckValidInput(0, 0);
+            switch (input)
+            {
+                case 0:
+                    DisplayGameIntro(); // 인트로 화면보기
+                    break;
+            }
+        } // 상태보기
+
+        static void DisplayInventory() //인벤토리보기
+        {
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("인벤토리");
+            Console.ResetColor();
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine($"[아이템 목록]");
+            foreach (Equipment equip in equipments) //현재 인벤토리에 있는 아이템 순서대로 출력
+            {
+                equip.PrintFormatted();                     //장비 설명 출력
+            }
+            Console.WriteLine();
+            Console.WriteLine("1. 장착 관리");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int input = CheckValidInput(0, 1);
+            switch (input)
+            {
+                case 0:
+                    DisplayGameIntro();             //인트로 화면보기
+                    break;
+
+                case 1:
+                    DisplayEquipmentManaged(); //장착 관리보기
+                    break;
+            }
+        }
+
+        static void DisplayEquipmentManaged() //장착관리
+        {
+            Console.Clear();
             Console.BackgroundColor = ConsoleColor.Yellow;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("인벤토리");
@@ -169,11 +164,11 @@ namespace textRPG
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            int index = 0;
-            foreach (Equipment equipment in equipments)
+            int index = 0;                                             // 아이템 번호 
+            foreach (Equipment equipment in equipments)  //현재 인벤토리에 있는 아이템 번호 순서대로 출력
             {
                 index++;
-                equipment.PrintFormatted(true, index);
+                equipment.PrintFormatted(true, index);         //장비 설명 출력 (번호 사용 유무, 번호)
             }
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
@@ -182,18 +177,18 @@ namespace textRPG
             int input = CheckValidInput(0, equipments.Count);
             if (input == 0)
             {
-                DisplayInventory();
+                DisplayInventory();                             //인벤토리 보기
             }
             else
             {
-                player.EquipSlot(equipments[input - 1]);
-                EquipmentManaged();
+                player.EquipSlot(equipments[input - 1]); //선택한 번호의 장비 장착
+                DisplayEquipmentManaged();               //장착관리 보기
             }
         }
-        static void DisplayShop()
+
+        static void DisplayShop() //상점보기
         {
             Console.Clear();
-
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("상점");
             Console.ResetColor();
@@ -203,11 +198,9 @@ namespace textRPG
             Console.WriteLine($"{player.Gold} G");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            int index = 0;
-            foreach (ShopItem shopitem in shopItems)
+            foreach (ShopItem shopitem in shopItems) //현재 상점에 있는 아이템 순서대로 출력
             {
-                index++;
-                shopitem.PrintFormatted();
+                shopitem.PrintFormatted();                  //장비 설명 출력
             }
             Console.WriteLine();
             Console.WriteLine("1. 아이템 구매");
@@ -219,21 +212,20 @@ namespace textRPG
             switch (input)
             {
                 case 0:
-                    DisplayGameIntro();
+                    DisplayGameIntro(); //인트로 화면 보기
                     break;
-
                 case 1:
-                    DisplayShopBuy();
+                    DisplayShopBuy();   //아이템 구매 화면보기
                     break;
                 case 2:
-                    DisplayShopSell();
+                    DisplayShopSell();   //아이템 판매 화면보기
                     break;
             }
         }
-        static void DisplayShopBuy()
+
+        static void DisplayShopBuy() //아이템 구매 화면보기
         {
             Console.Clear();
-
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("상점 - 아이템 구매");
             Console.ResetColor();
@@ -243,11 +235,11 @@ namespace textRPG
             Console.WriteLine($"{player.Gold} G");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            int index = 0;
-            foreach (ShopItem shopitem in shopItems)
+            int index = 0;                                      //아이템 번호
+            foreach (ShopItem shopitem in shopItems)//현재 상점에 있는 아이템 번호 순서대로 출력
             {
                 index++;
-                shopitem.PrintFormatted(true, index);
+                shopitem.PrintFormatted(true, index);   //장비 설명 출력 (번호 사용 유무, 번호)
             }
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
@@ -256,14 +248,15 @@ namespace textRPG
             int input = CheckValidInput(0, shopItems.Length);
             if (input == 0)
             {
-                DisplayShop();
+                DisplayShop();                      //상점보기
             }
             else
             {
-                BuyItem(shopItems[input - 1]);
+                BuyItem(shopItems[input - 1]); //선택한 번호의 아이템 구매
             }
         }
-        static void BuyItem(ShopItem item)
+
+        static void BuyItem(ShopItem item) //아이템 구매
         {
             if (item.Price == 0)
             {
@@ -273,22 +266,22 @@ namespace textRPG
             {
                 Equipment newEquipment = new Equipment(item.eName, item.Stat, item.Data, item.Type, item.StatValue);
                 player.Gold -= item.Price;
-                item.Price = 0; // 구매 완료 표시
-                equipments.Add(newEquipment);
+                item.Price = 0;                          // 구매 완료 표시
+                equipments.Add(newEquipment);  //인벤토리에 아이템 추가
                 Console.WriteLine($"{item.eName}을(를) 구매했습니다. 남은 골드: {player.Gold} G");
             }
             else
             {
                 Console.WriteLine("Gold 가 부족합니다.");
             }
-
             Console.WriteLine();
+            Thread.Sleep(1000);
             DisplayShopBuy();
         }
-        static void DisplayShopSell()
+
+        static void DisplayShopSell() //아이템 판매 화면보기
         {
             Console.Clear();
-
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("상점 - 아이템 판매");
             Console.ResetColor();
@@ -298,20 +291,18 @@ namespace textRPG
             Console.WriteLine($"{player.Gold} G");
             Console.WriteLine();
             Console.WriteLine($"[아이템 목록]");
-            int index = 0;
+            int index = 0;                                                                      //아이템 번호
             List<ShopItem> matchingShopItems = new List<ShopItem>();
-
             foreach (Equipment equipment in equipments)
             {
-                ShopItem matchingShopItem = shopItems.FirstOrDefault(shopItem => equipment.eName == shopItem.eName);
-                if (matchingShopItem != null)
+                ShopItem matchingShopItem = shopItems.FirstOrDefault(shopItem => equipment.eName == shopItem.eName);  
+                if (matchingShopItem != null)                                            // 인벤토리의 아이템과 같은 이름의 아이템 리스트 생성
                 {
                     ++index;
                     matchingShopItems.Add(matchingShopItem);
-                    matchingShopItems[index - 1].Sell();
-                    matchingShopItems[index - 1].PrintFormatted(true, index);
-                    matchingShopItems[index - 1].Price = 0;
-
+                    matchingShopItems[index - 1].SellPrice();                                //판매가격 저장
+                    matchingShopItems[index - 1].PrintFormatted(true, index);   //판매가능한 아이템 번호 순서대로 출력
+                    matchingShopItems[index - 1].Price = 0;                          // 구매완료 표시를 위해 0으로 초기화
                 }
             }
             Console.WriteLine();
@@ -321,21 +312,20 @@ namespace textRPG
             int input = CheckValidInput(0, matchingShopItems.Count);
             if (input == 0)
             {
-                DisplayShop();
+                DisplayShop();  //상점보기
             }
             else
             {
-                equipments[input - 1].SellingItem(player, matchingShopItems[input - 1]);
-                equipments.Remove(equipments[input - 1]);
-                matchingShopItems[input - 1].Price = matchingShopItems[input - 1].basePrice;
-                DisplayShopSell();
+                equipments[input - 1].SellingItem(player, matchingShopItems[input - 1]);          //선택한 번호의 아이템 판매
+                equipments.Remove(equipments[input - 1]);                                               //인벤토리에서 아이템 제거
+                matchingShopItems[input - 1].Price = matchingShopItems[input - 1].basePrice;  //원래 아이템의 가격으로 초기화
+                DisplayShopSell(); //아이템 판매 화면보기
             }
         }
         
-        static void DisplayEnterDungeon()
+        static void DisplayEnterDungeon() //던전입장
         {
             Console.Clear();
-
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("던전 입장");
             Console.ResetColor();
@@ -348,31 +338,34 @@ namespace textRPG
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
             int input = CheckValidInput(0, 3);
-           
             switch (input)
             {
                 case 0:
-                    DisplayGameIntro();
+                    DisplayGameIntro();                                                                         //인트로 화면 보기
                     break;
                 case 1:
-                    Dungeon easyDungeon = new Dungeon(5, Dungeon.Difficulty.Easy);
+                    if (player.Hp == 1) CannotEnterDungeon();
+                    Dungeon easyDungeon = new Dungeon(5, Dungeon.Difficulty.Easy);//쉬운 난이도 던전
                     ClearProbability(easyDungeon);
                     break;
                 case 2:
-                    Dungeon normalDungeon = new Dungeon(11, Dungeon.Difficulty.Normal);
+                    if (player.Hp == 1) CannotEnterDungeon();
+                    Dungeon normalDungeon = new Dungeon(11, Dungeon.Difficulty.Normal); //보통 난이도 던전
                     ClearProbability(normalDungeon);
                     break;
                 case 3:
-                    Dungeon hardDungeon = new Dungeon(17, Dungeon.Difficulty.Hard);
+                    if (player.Hp == 1) CannotEnterDungeon();
+                    Dungeon hardDungeon = new Dungeon(17, Dungeon.Difficulty.Hard);        //어려움 난이도 던전
                     ClearProbability(hardDungeon);
                     break;
 
             }
         }
-        static void DisplayDungeonClear(Dungeon dungeon)
+
+        static void DisplayDungeonClear(Dungeon dungeon) //던전 클리어 성공 함수
         {
-            player.ClearCount++;
-            player.LevelUp();
+            player.ClearCount++; 
+            player.LevelUp();                                            //플레이어 레벨업
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("던전 클리어!");
@@ -390,11 +383,12 @@ namespace textRPG
             switch (input)
             {
                 case 0:
-                    DisplayEnterDungeon();
+                    DisplayEnterDungeon();                            //던전입장
                     break;
             }
         }
-        static void DisplayDungeonFail()
+
+        static void DisplayDungeonFail() //던전 클리어 실패 함수
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
@@ -410,15 +404,16 @@ namespace textRPG
             switch (input)
             {
                 case 0:
-                    DisplayEnterDungeon();
+                    DisplayEnterDungeon(); //던전입장
                     break;
             }
         }
-        static void ClearProbability(Dungeon dungeon)
+
+        static void ClearProbability(Dungeon dungeon) //던전 클리어 확률 함수
         {
             if (player.Def < dungeon.RequiredDef)
             {
-                int rand = new Random().Next(1, 101);// 1 에서 100 사이의 랜덤 값
+                int rand = new Random().Next(1, 101);   // 1 에서 100 사이의 랜덤 값
                 if (rand <= 40)
                 {
                     DisplayDungeonFail();
@@ -435,8 +430,15 @@ namespace textRPG
                 DisplayDungeonClear(dungeon);
             }
         }
+        
+        static void CannotEnterDungeon() //던전 입장 불가
+        {
+                Console.WriteLine("체력이 없어서 던전 입장이 불가능 합니다.");
+                Thread.Sleep(1000);
+            DisplayEnterDungeon();
+        }
 
-        static void DisplayRest()
+        static void DisplayRest()   //휴식하기
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
@@ -460,7 +462,8 @@ namespace textRPG
                     break;
             }
         }
-        static void Rest()
+
+        static void Rest() //골드를 뺏고 체력을 회복하는 함수
         {
             if (player.Gold >= 500)
             {
@@ -475,28 +478,49 @@ namespace textRPG
             Thread.Sleep(1000);
         }
     }
-    public enum ItemType
-    {
-        Armor,
-        Weapon
-    }
 
-
-    public class Character
+    public class Character //플레이어가 될Character 클래스
     {
+        private double atk;
+        private int def;
+        private int hp;
+        private int gold;
+        private int armorStat;
+        private int weaponStat;
+
         public string Name { get; }
         public string Job { get; }
         public int Level { get; private set; }
-        public double Atk { get; set; }
-        public int Def { get; set; }
-        public int Hp { get; set; }
-        public int Gold { get; set; }
         public int ClearCount { get; set; }
+
+        public double Atk
+        {
+            get { return atk; }
+            set { atk = Math.Max(value, 0); }  // 0 이하로 떨어지지 않도록 제한
+        }
+
+        public int Def
+        {
+            get { return def; }
+            set { def = Math.Max(value, 0); }  // 0 이하로 떨어지지 않도록 제한
+        }
+
+        public int Hp
+        {
+            get { return hp; }
+            set { hp = Math.Max(value, 1); }  // 0 이하로 떨어지지 않도록 제한
+        }
+
+        public int Gold
+        {
+            get { return gold; }
+            set { gold = Math.Max(value, 0); }  // 0 이하로 떨어지지 않도록 제한
+        }
+
         private Equipment equippedArmor;
         private Equipment equippedWeapon;
 
-        int armorStat;
-        int weaponStat;
+        
 
         public Character(string name, string job, int level, double atk, int def, int hp, int gold)
         {
@@ -509,17 +533,17 @@ namespace textRPG
             Gold = gold;
             ClearCount = 0;
         }
-        public void PrintMount()
+
+        public void PrintMount()  //플레이어의 공격력, 방어력 출력
         {
             string atkDescription = Atk == Atk + weaponStat ? $"공격력 : {Atk}" : $"공격력 : {Atk} (+{weaponStat})";
             string defDescription = Def == Def + armorStat ? $"방어력 : {Def}" : $"방어력 : {Def} (+{armorStat})";
 
             Console.WriteLine(atkDescription);
             Console.WriteLine(defDescription);
-
         }
 
-        public void EquipSlot(Equipment item)
+        public void EquipSlot(Equipment item) //장비 장착 개선
         {
             if (item.Type == Equipment.ItemType.Armor)
             {
@@ -546,9 +570,9 @@ namespace textRPG
                 }
             }
             
-            
-        }
-        public void UnequipArmor()
+        } 
+
+        public void UnequipArmor() //방어구 해제
         {
             if (equippedArmor != null)
             {
@@ -557,9 +581,9 @@ namespace textRPG
                 equippedArmor = null;
                 armorStat = 0;
             }
-        }
+        } 
 
-        public void UnequipWeapon()
+        public void UnequipWeapon() //무기 해제
         {
             if (equippedWeapon != null)
             {
@@ -570,7 +594,7 @@ namespace textRPG
             }
         }
 
-        public void LevelUp()
+        public void LevelUp() //플레이어 레벨업
         {
             if(ClearCount ==Level)
             {
@@ -582,14 +606,16 @@ namespace textRPG
         }
     }
 
-    public class Equipment
+    public class Equipment //장비 클래스
     {
+        string Mount = "";
+
         public string eName { get; private set; }
         public string Stat { get; private set; }
         public string Data { get; private set; }
         public ItemType Type { get; }
         public int StatValue { get; }
-        string Mount = "";
+        
         public Equipment(string name, string stat, string data, ItemType type, int statValue)
         {
             eName = name;
@@ -598,18 +624,20 @@ namespace textRPG
             Type = type;
             StatValue = statValue;
         }
-        public virtual void PrintFormatted(bool useIndex = false, int index = -1)
+
+        public virtual void PrintFormatted(bool useIndex = false, int index = -1) //장비 설명 출력
         {
             string indexString = useIndex ? $"{index} " : "";
             string formattedString = $"- {indexString}{Mount}{eName,-10} |{Stat,-10} |{Data,-30}";
             Console.WriteLine(formattedString);
         }
-        public void IsMount(bool useMount)
+
+        public void IsMount(bool useMount) //장착 확인
         {
             Mount = useMount ? "[E]" : "";
         }
 
-        public void SellingItem(Character player, ShopItem item)
+        public void SellingItem(Character player, ShopItem item) //아이템 판매
         {
             if (Mount == "[E]")
             {
@@ -618,29 +646,31 @@ namespace textRPG
             }
             player.Gold += (int)(item.basePrice * 0.85);
         }
-        public enum ItemType
+        
+        public enum ItemType //아이템 타입
         {
             Armor,
             Weapon
         }
     }
 
-    public class ShopItem : Equipment
+    public class ShopItem : Equipment 
     {
         public int Price { get; set; }
         public int basePrice;
+
         public ShopItem(string name, string stat, string description, ItemType type, int statValue, int price)
          : base(name, stat, description, type, statValue)
         {
             Price = price;
             basePrice = Price;
         }
-        public void Sell()
+        public void SellPrice() //아이템 판매 가격 설정
         {
             Price += (int)(basePrice * 0.85);
         }
 
-        public override void PrintFormatted(bool useIndex = false, int index = -1)
+        public override void PrintFormatted(bool useIndex = false, int index = -1) //장비 설명 출력 재정의
         {
             string indexString = useIndex ? $"{index} " : "";
             string formattedString;
@@ -648,10 +678,11 @@ namespace textRPG
             formattedString = $"- {indexString}{eName,-10} |{Stat,-10} |{Data,-30}|{priceInfo,-10}";
             Console.WriteLine(formattedString);
         }
-    }
-    public class Dungeon
+    } //상점 아이템 클래스
+
+    public class Dungeon //던전 클래스
     {
-        public enum Difficulty
+        public enum Difficulty //난이도 설정
         {
             Easy,
             Normal,
@@ -660,18 +691,18 @@ namespace textRPG
 
         public int RequiredDef { get; private set; }
         public int HpLoss { get; private set; }
-        public Difficulty DungeonDifficulty { get; private set; }
-
-        public string DifficultyKorean { get; private set; }
         public int BaseHP { get; private set; }
         public int BaseGold { get; private set; }
+        public Difficulty DungeonDifficulty { get; private set; }
+        public string DifficultyKorean { get; private set; }
+
         public Dungeon(int requireDef, Difficulty difficulty)
         {
             RequiredDef = requireDef;
             DungeonDifficulty = difficulty;
         }
 
-        public void Enter(Character player)
+        public void Enter(Character player) //입장 함수
         {
             BaseHP = player.Hp;
             BaseGold = player.Gold;
@@ -686,8 +717,7 @@ namespace textRPG
 
         }
 
-
-        private int GetBaseReward()
+        private int GetBaseReward() //보상 함수
         {
             switch (DungeonDifficulty)
             {
