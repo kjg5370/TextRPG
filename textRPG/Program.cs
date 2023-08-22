@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Threading;
 
 namespace textRPG
 {
@@ -52,10 +53,11 @@ namespace textRPG
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전입장");
+            Console.WriteLine("5. 휴식하기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int input = CheckValidInput(1, 4);
+            int input = CheckValidInput(1, 5);
             switch (input)
             {
                 case 1:
@@ -70,6 +72,9 @@ namespace textRPG
                     break;
                 case 4:
                     DisplayEnterDungeon();
+                    break;
+                case 5:
+                    DisplayRest();
                     break;
             }
         }
@@ -427,6 +432,45 @@ namespace textRPG
                 dungeon.Enter(player);
                 DisplayDungeonClear(dungeon);
             }
+        }
+
+        static void DisplayRest()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("휴식하기");
+            Console.ResetColor();
+            Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {player.Gold} G)");
+            Console.WriteLine();
+            Console.WriteLine("1. 휴식하기");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            int input = CheckValidInput(0, 1);
+            switch (input)
+            {
+                case 0:
+                    DisplayGameIntro();
+                    break;
+                case 1:
+                    Rest();
+                    DisplayRest();
+                    break;
+            }
+        }
+        static void Rest()
+        {
+            if (player.Gold >= 500)
+            {
+                Console.WriteLine("휴식을 완료했습니다.");
+                player.Gold -= 500;
+                player.Hp = 100;
+            }
+            else
+            {
+                Console.WriteLine("Gold 가 부족합니다.");
+            }
+            Thread.Sleep(1000);
         }
     }
     public enum ItemType
