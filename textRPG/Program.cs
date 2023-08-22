@@ -177,7 +177,7 @@ namespace textRPG
             }
             else
             {
-                equipments[input - 1].MountEquipment(player);
+                player.EquipSlot(equipments[input - 1]);
                 EquipmentManaged();
             }
         }
@@ -339,6 +339,9 @@ namespace textRPG
         public int Hp { get; }
         public int Gold { get; set; }
 
+        private Equipment equippedArmor;
+        private Equipment equippedWeapon;
+
         public Character(string name, string job, int level, int atk, int def, int hp, int gold)
         {
             Name = name;
@@ -358,6 +361,52 @@ namespace textRPG
             Console.WriteLine(defDescription);
 
         }
+
+        public void EquipSlot(Equipment item)
+        {
+            if(item.Type == ItemType.Armor)
+            {
+                if (equippedArmor == item) UnequipArmor();
+                else
+                {
+                    UnequipArmor();
+                    equippedArmor = item;
+                    equippedArmor.IsMount(true);
+                    Def += equippedArmor.StatValue;
+                }
+            }
+            else if (item.Type == ItemType.Weapon)
+            {
+                if (equippedArmor == item) UnequipArmor();
+                else
+                {
+                    UnequipWeapon();
+                    equippedWeapon = item;
+                    equippedWeapon.IsMount(true);
+                    Atk += equippedWeapon.StatValue;
+                }
+            }
+        }
+        public void UnequipArmor()
+        {
+            if (equippedArmor != null)
+            {
+                equippedArmor.IsMount(false);
+                Def -= equippedArmor.StatValue;
+                equippedArmor = null;
+            }
+        }
+
+        public void UnequipWeapon()
+        {
+            if (equippedWeapon != null)
+            {
+                equippedWeapon.IsMount(false);
+                Atk -= equippedWeapon.StatValue;
+                equippedWeapon = null;
+            }
+        }
+        
     }
 
     public class Equipment
@@ -382,46 +431,22 @@ namespace textRPG
             string formattedString = $"- {indexString}{Mount}{eName,-10} |{Stat,-10} |{Data,-30}";
             Console.WriteLine(formattedString);
         }
+        public void IsMount(bool useMount)
+        {
+            Mount = useMount ? "[E]" : "";
+        }
         
-        public void MountEquipment(Character player)
-        {
-            if (Mount == "")
-            {
-                Mount = "[E]";
-                if (Type == ItemType.Weapon)
-                {
-                    player.Atk += StatValue;
-                }
-                else if (Type == ItemType.Armor)
-                {
-                    player.Def += StatValue;
-                }
-            }
-            else
-            {
-                UnmountEquipment(player);
-            }
-        }
-
-        public void UnmountEquipment(Character player)
-        {
-            Mount = "";
-            if (Type == ItemType.Weapon)
-            {
-                player.Atk -= StatValue;
-            }
-            else if (Type == ItemType.Armor)
-            {
-                player.Def -= StatValue;
-            }
-        }
         public void SellingItem(Character player, ShopItem item)
         {
             if (Mount == "[E]")
-                UnmountEquipment(player); // 장착 해제
+            {
+                if (Type == ItemType.Armor) player.UnequipArmor();
+                else if (Type == ItemType.Weapon) player.UnequipWeapon();
+            }
             player.Gold += (int)(item.basePrice * 0.85);
         }
     }
+
     public class ShopItem : Equipment
     {
         public int Price { get; set; }
