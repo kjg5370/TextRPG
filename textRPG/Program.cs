@@ -370,9 +370,9 @@ namespace textRPG
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("던전 입장");
+            Console.WriteLine("던전 클리어!");
             Console.ResetColor();
-            Console.WriteLine($"던전 클리어!축하합니다!!\r\n{dungeon.DifficultyKorean} 던전을 클리어 하였습니다.");
+            Console.WriteLine($"축하합니다!!\r\n{dungeon.DifficultyKorean} 던전을 클리어 하였습니다.");
             Console.WriteLine();
             Console.WriteLine("[탐험 결과]");
             Console.WriteLine($"체력 {dungeon.BaseHP} -> {player.Hp}");
