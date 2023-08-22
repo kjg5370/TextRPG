@@ -137,11 +137,12 @@ namespace textRPG
             }
             Console.WriteLine();
             Console.WriteLine("1. 장착 관리");
+            Console.WriteLine("2. 아이템 정렬");
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int input = CheckValidInput(0, 1);
+            int input = CheckValidInput(0, 2);
             switch (input)
             {
                 case 0:
@@ -150,6 +151,44 @@ namespace textRPG
 
                 case 1:
                     DisplayEquipmentManaged(); //장착 관리보기
+                    break;
+                case 2:
+                    DisplayInventorySort(); //장착 관리보기
+                    break;
+            }
+        }
+
+        static void DisplayInventorySort() //인벤토리 정렬
+        {
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("인벤토리 - 아이템 정렬");
+            Console.ResetColor();
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine($"[아이템 목록]");
+            int index = 0;                                             // 아이템 번호 
+            foreach (Equipment equipment in equipments)  //현재 인벤토리에 있는 아이템 번호 순서대로 출력
+            {
+                index++;
+                equipment.PrintFormatted(true, index);         //장비 설명 출력 (번호 사용 유무, 번호)
+            }
+            Console.WriteLine();
+            Console.WriteLine("1. 아이템 정렬");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            int input = CheckValidInput(0, 1);
+            switch (input)
+            {
+                case 0:
+                    DisplayInventory();             //인트로 화면보기
+                    break;
+
+                case 1:
+                    equipments.Sort((item1, item2) => item2.eName.Length.CompareTo(item1.eName.Length));
+                    DisplayInventorySort();
                     break;
             }
         }
