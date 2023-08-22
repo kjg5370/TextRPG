@@ -343,6 +343,7 @@ namespace textRPG
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
             int input = CheckValidInput(0, 3);
+           
             switch (input)
             {
                 case 0:
@@ -350,18 +351,15 @@ namespace textRPG
                     break;
                 case 1:
                     Dungeon easyDungeon = new Dungeon(5, Dungeon.Difficulty.Easy);
-                    easyDungeon.Enter(player);
-                    DisplayDungeonClear(easyDungeon);
+                    ClearProbability(easyDungeon);
                     break;
                 case 2:
                     Dungeon normalDungeon = new Dungeon(11, Dungeon.Difficulty.Normal);
-                    normalDungeon.Enter(player);
-                    DisplayDungeonClear(normalDungeon);
+                    ClearProbability(normalDungeon);
                     break;
                 case 3:
                     Dungeon hardDungeon = new Dungeon(17, Dungeon.Difficulty.Hard);
-                    hardDungeon.Enter(player);
-                    DisplayDungeonClear(hardDungeon);
+                    ClearProbability(hardDungeon);
                     break;
 
             }
@@ -370,9 +368,9 @@ namespace textRPG
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("던전 입장");
+            Console.WriteLine("던전 클리어!");
             Console.ResetColor();
-            Console.WriteLine($"던전 클리어!축하합니다!!\r\n{dungeon.DifficultyKorean} 던전을 클리어 하였습니다.");
+            Console.WriteLine($"축하합니다!!\r\n{dungeon.DifficultyKorean} 던전을 클리어 하였습니다.");
             Console.WriteLine();
             Console.WriteLine("[탐험 결과]");
             Console.WriteLine($"체력 {dungeon.BaseHP} -> {player.Hp}");
@@ -387,6 +385,47 @@ namespace textRPG
                 case 0:
                     DisplayEnterDungeon();
                     break;
+            }
+        }
+        static void DisplayDungeonFail()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("던전 실패!");
+            Console.ResetColor();
+            Console.WriteLine("체력이 절반으로 깎였습니다.");
+            player.Hp /= 2;
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            int input = CheckValidInput(0, 0);
+            switch (input)
+            {
+                case 0:
+                    DisplayEnterDungeon();
+                    break;
+            }
+        }
+        static void ClearProbability(Dungeon dungeon)
+        {
+            if (player.Def < dungeon.RequiredDef)
+            {
+                int rand = new Random().Next(1, 101);// 1 에서 100 사이의 랜덤 값
+                if (rand <= 40)
+                {
+                    DisplayDungeonFail();
+                }
+                else
+                {
+                    dungeon.Enter(player);
+                    DisplayDungeonClear(dungeon);
+                }
+            }
+            else
+            {
+                dungeon.Enter(player);
+                DisplayDungeonClear(dungeon);
             }
         }
     }
@@ -570,27 +609,17 @@ namespace textRPG
         {
             BaseHP = player.Hp;
             BaseGold = player.Gold;
-            if (player.Def < RequiredDef)
-            {
-                int rand = new Random().Next(1, 101); // 1 에서 100 사이의 랜덤 값
 
-                if (rand <= 40)
-                {
-                    Console.WriteLine("던전 실패!, 체력이 절반으로 깎였습니다.");
-                    player.Hp /= 2;
-                    return;
-                }
-            }
             HpLoss = new Random().Next(20, 36) + Math.Max(player.Def - RequiredDef, 0); // 20 ~ 35 랜덤 값 + (내 방어력 - 권장 방어력)
             int baseReward = GetBaseReward();
-            double bonusReward = new Random().Next(player.Atk, player.Atk*2) /100.0;
+            double bonusReward = new Random().Next(player.Atk, player.Atk * 2) / 100.0;
             double totalReward = baseReward * bonusReward;
 
             player.Hp -= HpLoss;
             player.Gold += (int)totalReward;
-            
+
         }
-        
+
 
         private int GetBaseReward()
         {
